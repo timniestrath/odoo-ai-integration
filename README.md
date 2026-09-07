@@ -1,61 +1,66 @@
-# Odoo + KI Integrationsprojekt
+# Odoo + AI Integration Project
 
-Lernprojekt: KI-Assistent, der über natürliche Sprache mit einem Odoo-ERP-System spricht.
+Learning project: an AI assistant that talks to an Odoo ERP system using natural language.
 
-## Phase 1 – Odoo lokal zum Laufen bringen
+## Phase 1 – Get Odoo running locally
 
-1. Docker Desktop installieren (falls noch nicht vorhanden) und starten.
-2. In diesem Ordner ein Terminal öffnen.
-3. Container starten:
-   ```
-   docker-compose up -d
-   ```
-4. Kurz warten (~30 Sek.), dann im Browser öffnen:
-   ```
+1. Install Docker Engine (native in WSL2/Ubuntu) and start it.
+2. Open a terminal in this folder.
+3. Start the containers:
+```
+   docker compose up -d
+```
+4. Wait a bit (~30 sec), then open in your browser:
+```
    http://localhost:8069
-   ```
-5. Odoo fragt nach Erstkonfiguration: Datenbankname `odoo`, E-Mail/Passwort frei wählen (merken!), Demo-Daten aktivieren anhaken (praktisch zum Testen).
-6. Nach dem Setup bist du im Odoo-Dashboard. Fertig – Odoo läuft.
+```
+5. Odoo asks for initial setup: database name `odoo`, choose any email/password (remember them!), check "Load demo data" (handy for testing).
+6. After setup you land in the Odoo dashboard. Done — Odoo is running.
 
-## Phase 2 – API-Verbindung testen
+## Phase 2 – Test the API connection
 
-1. `.env.example` kopieren zu `.env`:
-   ```
+1. Copy `.env.example` to `.env`:
+```
    cp .env.example .env
-   ```
-2. In `.env` die Zugangsdaten eintragen, die du in Schritt 5 oben vergeben hast.
-3. Python-Abhängigkeiten installieren:
-   ```
+```
+2. Fill in `.env` with the credentials you chose in step 5 above.
+3. Install Python dependencies:
+```
    pip install -r requirements.txt --break-system-packages
-   ```
-4. Verbindung testen:
-   ```
+```
+4. Test the connection:
+```
    python scripts/test_connection.py
-   ```
-5. Erwartete Ausgabe: Odoo-Version + eine Liste von Testkontakten.
+```
+5. Expected output: the Odoo version + a list of test contacts.
 
-## Phase 3 – KI anbinden (nächster Schritt, noch offen)
+## Phase 3 – Connect the AI (next step, still open)
 
-- Anthropic API-Key in `.env` eintragen (`ANTHROPIC_API_KEY`)
-- Function-Calling-Tool definieren, das intern `test_connection.py`-Logik nutzt
-  (z.B. `get_overdue_invoices()`, `get_open_orders()`)
-- Erste Aufgabe: Auf natürliche Sprache antworten wie
-  "Welche Rechnungen sind überfällig?"
+- Add the Anthropic API key to `.env` (`ANTHROPIC_API_KEY`)
+- Define a function-calling tool that internally reuses the `test_connection.py` logic
+  (e.g. `get_overdue_invoices()`, `get_open_orders()`)
+- First task: answer natural-language questions like
+  "Which invoices are overdue?"
 
-## Ordnerstruktur
+## Folder structure
 
 ```
-odoo-ki-projekt/
-├── docker-compose.yml     # Odoo + PostgreSQL Setup
-├── .env.example           # Vorlage für Zugangsdaten
-├── requirements.txt       # Python-Pakete
-├── addons/                # Für eigene Odoo-Module (aktuell leer)
+odoo-ai-integration/
+├── docker-compose.yml     # Odoo + PostgreSQL setup
+├── .env.example           # Template for credentials
+├── requirements.txt       # Python packages
+├── addons/                # For custom Odoo modules (currently empty)
 └── scripts/
-    └── test_connection.py # Testet die Odoo-API-Verbindung
+    └── test_connection.py # Tests the Odoo API connection
 ```
 
-## Speicherbedarf
+## Storage requirements
 
-- Odoo + PostgreSQL (Basis): ca. 2-3 GB
-- Mit Testdaten/Logs: ca. 5-10 GB
-- Für spätere lokale KI-Modelle (Ollama etc.) zusätzlich einplanen: 100+ GB
+- Odoo + PostgreSQL (base): approx. 2-3 GB
+- With test data/logs: approx. 5-10 GB
+- Additional space for future local AI models (Ollama etc.): 100+ GB
+
+## Setup notes
+
+- Runs on native Docker Engine inside WSL2 (Ubuntu), not Docker Desktop.
+- Uses `docker compose` (Compose V2 plugin), not the legacy `docker-compose` binary.

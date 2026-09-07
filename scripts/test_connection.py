@@ -1,10 +1,10 @@
 """
-Testet die Verbindung zu Odoo über XML-RPC.
-Voraussetzung: Odoo läuft (docker-compose up), Datenbank wurde im Browser
-unter http://localhost:8069 bereits einmal eingerichtet.
+Tests the connection to Odoo via XML-RPC.
+Prerequisite: Odoo is running (docker compose up), and the database has
+already been set up once in the browser at http://localhost:8069.
 
-Ausführen mit:  pip install python-dotenv --break-system-packages
-                python scripts/test_connection.py
+Run with:  pip install python-dotenv --break-system-packages
+           python scripts/test_connection.py
 """
 
 import os
@@ -22,18 +22,18 @@ PASSWORD = os.getenv("ODOO_PASSWORD", "admin")
 def main():
     common = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/common")
     version_info = common.version()
-    print("Odoo-Version:", version_info)
+    print("Odoo version:", version_info)
 
     uid = common.authenticate(DB, USERNAME, PASSWORD, {})
     if not uid:
-        print("Login fehlgeschlagen. Prüfe DB-Name/Zugangsdaten in .env.")
+        print("Login failed. Check the DB name/credentials in .env.")
         return
 
-    print(f"Erfolgreich eingeloggt, User-ID: {uid}")
+    print(f"Successfully logged in, user ID: {uid}")
 
     models = xmlrpc.client.ServerProxy(f"{URL}/xmlrpc/2/object")
 
-    # Beispiel: die ersten 5 Partner (Kontakte) auslesen
+    # Example: read the first 5 partners (contacts)
     partner_ids = models.execute_kw(
         DB, uid, PASSWORD,
         "res.partner", "search",
@@ -45,9 +45,9 @@ def main():
         [partner_ids], {"fields": ["name", "email"]}
     )
 
-    print("\nErste 5 Kontakte in Odoo:")
+    print("\nFirst 5 contacts in Odoo:")
     for p in partners:
-        print(f"  - {p['name']} ({p.get('email') or 'keine E-Mail'})")
+        print(f"  - {p['name']} ({p.get('email') or 'no email'})")
 
 
 if __name__ == "__main__":
